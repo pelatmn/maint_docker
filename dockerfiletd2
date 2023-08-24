@@ -1,0 +1,20 @@
+# Dockerfile for ROS Noetic
+FROM ros:noetic
+
+# Install necessary packages and dependencies
+RUN apt-get update && apt-get install -y \
+    ros-noetic-moveit \
+    ros-noetic-ar-track-alvar
+
+# Copy your ROS package and its dependencies into the container
+COPY . ./
+
+# Build the ROS package inside the container
+RUN /bin/bash -c "source /opt/ros/noetic/setup.bash && cd /catkin_ws && catkin_make"
+
+# Set the ROS environment variables
+ENV ROS_MASTER_URI=http://localhost:11311
+ENV ROS_HOSTNAME=localhost
+
+# Run the ROS node when the container starts
+CMD ["roslaunch", "your_ros_package", "your_launch_file.launch"]
